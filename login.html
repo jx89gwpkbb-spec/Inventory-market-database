@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+  <div style="margin:24px">
+    <h1>Login</h1>
+    <form method="post" action="/login">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <label>Username or Email: <input name="identifier" value="{{ identifier|default('') }}" required></label><br>
+      <label>Password: <input name="password" type="password" required></label><br>
+      <button type="submit">Sign in</button>
+    </form>
+    <p><a href="/users/new">Create new user</a></p>
+    <p><a href="/">Back to switchboard</a></p>
+  </div>
+{% endblock %}

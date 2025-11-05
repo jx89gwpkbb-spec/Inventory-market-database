@@ -1,0 +1,15 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}Inventory Demo{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/messages.css">
+  </head>
+  <body>
+    <div class="container">
+      {% block messages %}{% include '_messages.html' %}{% endblock %}
+      {% block content %}{% endblock %}
+    </div>
+    <script src="/static/js/messages.js"></script>
+  </body>
+</html>

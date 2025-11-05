@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  unit:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run unit tests
+        run: |
+          pytest -q tests/test_inventory.py tests/test_messages.py
+
+  e2e:
+    name: Playwright E2E
+    needs: unit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies + Playwright
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest playwright
+
+      - name: Install Playwright browsers
+        run: |
+          python -m playwright install
+
+      - name: Start web app with gunicorn
+        env:
+          FLASK_SECRET: ci-secret
+        run: |
+          nohup gunicorn -b 127.0.0.1:5000 inventory.web:app > app.log 2>&1 &
+          # wait for server to respond
+          for i in {1..30}; do
+            if curl -sSf http://127.0.0.1:5000/ >/dev/null 2>&1; then
+              echo "server ready"
+              break
+            fi
+            sleep 1
+          done
+
+      - name: Run Playwright E2E tests
+        run: |
+          pytest tests/e2e/test_toasts_playwright.py -q

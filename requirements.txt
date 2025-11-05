@@ -1,0 +1,5 @@
+# minimal deps for running tests
+pytest
+Flask
+Flask-WTF
+gunicorn

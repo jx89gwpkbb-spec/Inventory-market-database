@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Switchboard</title>
+    <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px}</style>
+  </head>
+  <body>
+    <h1>Switchboard</h1>
+    {% include "_messages.html" %}
+    {% if current_user %}
+    <p>Signed in as <strong>{{ current_user.username }}</strong> ({{ current_user.email }})</p>
+      <form method="post" action="/logout" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit">Logout</button>
+      </form>
+    {% extends 'base.html' %}
+
+    {% block title %}Switchboard{% endblock %}
+
+    {% block content %}
+      <div style="font-family:system-ui,Segoe UI,Roboto,Arial;margin:24px">
+        {% if current_user %}
+          <p>Signed in as <strong>{{ current_user.username }}</strong> ({{ current_user.email }})</p>
+          <form method="post" action="/logout" style="display:inline">
+            <button type="submit">Logout</button>
+          </form>
+        {% else %}
+          <p><a href="/login">Login</a> or <a href="/users/new">Create user</a></p>
+        {% endif %}
+
+        <h2>Quick links for common demo actions</h2>
+        <ul>
+          <li><a href="/users">List users</a></li>
+          <li><a href="/users/new">Add new user</a></li>
+          <li><a href="/users">Search users</a> (use the filter box)</li>
+          <li><a href="/">Reload this page</a></li>
+        </ul>
+
+        <h2>Create user (quick)</h2>
+        <form method="post" action="/users/new">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <label>Username: <input name="username" required></label><br>
+          <label>Email: <input name="email" type="email" required></label><br>
+          <label>Full name: <input name="full_name"></label><br>
+          <button type="submit">Create user</button>
+        </form>
+
+        <h2>Notes</h2>
+        <p>This is a lightweight admin switchboard for the demo. For production, protect it behind authentication and CSRF protection.</p>
+      </div>
+    {% endblock %}

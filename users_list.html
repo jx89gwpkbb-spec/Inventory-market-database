@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Users</title>
+  </head>
+  <body>
+    <h1>Users</h1>
+{% extends 'base.html' %}
+
+{% block title %}Users{% endblock %}
+
+{% block content %}
+  <div style="margin:24px">
+    <p><a href="/users/new">Add new user</a></p>
+
+    <form method="get" action="/users">
+      <label>Search: <input name="q" value="{{ q|default('') }}" placeholder="username or email"></label>
+      <button type="submit">Filter</button>
+      {% if q %}<a href="/users">Clear</a>{% endif %}
+    </form>
+
+    <ul>
+      {% for u in users %}
+      <li>
+        {{ u.id }} - {{ u.username }} &lt;{{ u.email }}&gt; {% if u.full_name %}({{ u.full_name }}){% endif %}
+        <!-- delete form -->
+        <form method="post" action="/users/{{ u.id }}/delete" style="display:inline;margin-left:8px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" onclick="return confirm('Delete user {{ u.username }}?')">Delete</button>
+        </form>
+      </li>
+      {% else %}
+      <li>No users</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endblock %}
+  </body>
+</html>

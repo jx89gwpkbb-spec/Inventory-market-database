@@ -1,0 +1,10 @@
+{%- set msgs = get_flashed_messages(with_categories=true) -%}
+{# For a cleaner UI we render toasts only (no inline message boxes).
+   Expose flashed messages to JS via `window.__FLASH_MESSAGES` so the
+   client-side toast renderer can display them. Keep messages short.
+ #}
+{% if msgs %}
+  <script>
+    window.__FLASH_MESSAGES = {{ msgs|tojson|safe }};
+  </script>
+{% endif %}
